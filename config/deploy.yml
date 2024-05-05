@@ -1,0 +1,44 @@
+#config:
+  service: blog
+  image: marlymarl/blog
+  servers:
+    #- 5.78.116.121
+    #- 5.78.45.169
+    - 5.78.116.121
+  registry:
+    username: marlymarl
+    password:
+      - KAMAL_REGISTRY_PASSWORD
+  env:
+    clear:
+      DB_HOST: 5.78.116.121
+        #5.78.97.129
+    secret:
+      - RAILS_MASTER_KEY
+      - MYSQL_ADMIN_PASSWORD
+  db:
+    image: mysql:8.0
+    host: 5.78.116.121
+      #5.78.97.129
+    port: 3306
+    env:
+      clear:
+        MYSQL_ROOT_HOST: '%'
+      secret:
+        - MYSQL_ADMIN_PASSWORD
+    files:
+      #- config/mysql/production.cnf:/etc/mysql/my.cnf
+      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - data:/var/lib/mysql
+  ssh:
+    user: root
+    #ssh_key: ~/.ssh/hetzner_rsa
+  #passphrase: Monster1029
+  #docker_env:
+    #DOCKER_HOST: 5.78.116.121
+
+    builder:
+      remote:
+        arch: arm64
+        
