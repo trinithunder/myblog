@@ -21,8 +21,8 @@ jobs:
           PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "$PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
+          ssh -i ~/.ssh/deploy_key root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
 
