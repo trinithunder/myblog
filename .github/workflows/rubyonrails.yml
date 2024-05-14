@@ -11,28 +11,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
 
-      - name: Set up SSH key
+      - name: Set up SSH
         env:
-          PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }} # Add this line
+          PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
           mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          eval $(ssh-agent)
-          if [ -s ~/.ssh/deploy_key ]; then
-            echo "$SSH_PASSPHRASE" | ssh-add -k ~/.ssh/deploy_key # Passphrase input
-            ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
-          else
-            echo "Private key is empty or not accessible"
-            exit 1
-          fi
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "$SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+          ssh-keyscan -t rsa 5.161.62.246 >> ~/.ssh/known_hosts
 
       - name: Deploy to Hetzner
-        run: ssh -o StrictHostKeyChecking=no root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
+        run: ssh -i ~/.ssh/id_rsa root@5.161.62.246 "cd /path/to/your/app && git pull"
 
