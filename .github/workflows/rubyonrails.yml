@@ -17,11 +17,9 @@ jobs:
         run: sudo apt-get install -y openssh-client
 
       - name: Set up SSH key
-        env:
-          PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/deploy_key
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           eval $(ssh-agent)
           if [ -s ~/.ssh/deploy_key ]; then
