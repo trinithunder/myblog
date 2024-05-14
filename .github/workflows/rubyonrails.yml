@@ -16,8 +16,13 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
 
-      - name: Deploy to Hetzner
+      - name: Configure SSH
         env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          ssh -i <(echo "$DEPLOY_KEY") root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
+
