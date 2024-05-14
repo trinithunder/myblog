@@ -1,0 +1,23 @@
+name: Deploy to Hetzner Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Deploy to Hetzner
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          ssh -i <(echo "$DEPLOY_KEY") root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
