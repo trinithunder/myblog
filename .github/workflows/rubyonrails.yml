@@ -18,14 +18,14 @@ jobs:
 
       - name: Set up SSH
         env:
-          PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
           mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           eval $(ssh-agent -s)
-          echo "$SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+          echo "${SSH_PASSPHRASE}" | ssh-add ~/.ssh/id_rsa
           ssh-keyscan -t rsa 5.161.62.246 >> ~/.ssh/known_hosts
 
       - name: Deploy to Hetzner
