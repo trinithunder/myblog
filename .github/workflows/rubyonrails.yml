@@ -24,8 +24,13 @@ jobs:
           echo "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           eval $(ssh-agent)
-          ssh-add ~/.ssh/deploy_key
-          ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
+          if [ -s ~/.ssh/deploy_key ]; then
+            ssh-add ~/.ssh/deploy_key
+            ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
+          else
+            echo "Private key is empty or not accessible"
+            exit 1
+          fi
 
       - name: Deploy to Hetzner
         run: ssh -o StrictHostKeyChecking=no root@5.161.62.246 "cd /var/www/lighteksystems.tech && git pull"
