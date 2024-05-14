@@ -23,8 +23,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/deploy_key
           ssh-keyscan -H 5.161.62.246 >> ~/.ssh/known_hosts
 
       - name: Deploy to Hetzner
